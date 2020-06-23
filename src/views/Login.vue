@@ -6,8 +6,8 @@
       </div>
       <el-form class="login-form" label-width="0px" :model="loginForm" :rules="loginFormRules" ref="loginFormRef">
         <!--用户名-->
-        <el-form-item prop="account">
-          <el-input placeholder="请输入账号" prefix-icon="el-icon-user" v-model="loginForm.account"></el-input>
+        <el-form-item prop="username">
+          <el-input placeholder="请输入账号" prefix-icon="el-icon-user" v-model="loginForm.username"></el-input>
         </el-form-item>
         <!--密码-->
         <el-form-item prop="password">
@@ -27,18 +27,19 @@
 
 <script>
 import ShopApi from '@/api/shopApi'
+import { saveTokens } from '@/config/token'
 export default {
-  name: 'login',
+  name: 'Login',
   data () {
     return {
       // 表单数据绑定
       loginForm: {
-        account: '',
-        password: ''
+        username: 'admin',
+        password: '123456'
       },
       // 表单校验规则
       loginFormRules: {
-        account: [
+        username: [
           { required: true, message: '请输入账号', trigger: 'blur' },
           { min: 3, max: 10, message: '长度在 3 到 10 个字符', trigger: 'blur' }
         ],
@@ -56,6 +57,11 @@ export default {
         if (!valid) return
         const res = await ShopApi.loginAccount(this.loginForm)
         console.log(res)
+        if (res.data) {
+          this.$message.success('登录成功')
+          saveTokens(res.data.token)
+          this.$router.push('/home')
+        }
       })
     },
     // 重置

@@ -68,12 +68,13 @@ _axios.interceptors.request.use(
     if (token) {
       reqConfig.headers.token = token
     }
-    // loadingInstance = Vue.prototype.$loading({
-    //   lock: true,
-    //   text: '加载中',
-    //   spinner: 'el-icon-loading',
-    //   background: 'rgba(0, 0, 0, 0.2)'
-    // })
+    console.log(Vue.prototype)
+    loadingInstance = Vue.prototype.$loading.service({
+      lock: true,
+      text: '加载中',
+      spinner: 'el-icon-loading',
+      background: 'rgba(0, 0, 0, 0.2)'
+    })
     return reqConfig
   },
   error => {
@@ -86,15 +87,16 @@ _axios.interceptors.response.use(
     if (loadingInstance) {
       loadingInstance.close()
     }
-    const { code, message, isSuccess } = res.data
-    if (code !== -1 && isSuccess) {
+    const { meta } = res.data
+    if (meta.status === 200) {
       // 获取数据成功
       return res.data
     } else {
       Vue.prototype.$message({
         type: 'error',
-        message: message
+        message: meta.msg
       })
+      return res.data
     }
   },
   error => {

@@ -5,7 +5,7 @@ export default class ShopApi {
   static loginAccount (data) {
     return _axios({
       method: 'post',
-      url: '/loginAccount',
+      url: '/login',
       data
     })
   }
